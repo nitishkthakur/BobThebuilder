@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder - AI-Powered Resume Optimization</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#1e40af',
+                            700: '#1e3a8a',
+                            800: '#1e3a8a',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen" x-data="resumeBuilder()">
+        <!-- Header -->
+        <header class="gradient-bg shadow-lg">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-8">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-primary-800" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0h8v12H6V4z" clip-rule="evenodd"/>
+                                <path d="M8 6h4v2H8V6zM8 10h4v2H8v-2zM8 14h2v2H8v-2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 class="text-3xl font-bold text-white">Resume Builder</h1>
+                            <p class="text-primary-100 text-sm">AI-Powered Resume Optimization</p>
+                        </div>
+                    </div>
+                    <div class="hidden md:flex items-center space-x-4">
+                        <div class="bg-white bg-opacity-20 backdrop-blur rounded-lg px-4 py-2">
+                            <span class="text-white text-sm font-medium">Professional Edition</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <!-- Mode Selection -->
+            <div class="mb-12">
+                <div class="flex flex-wrap gap-4 justify-center">
+                    <button 
+                        @click="currentMode = 'format'"
+                        :class="currentMode === 'format' ? 'bg-primary-800 text-white shadow-lg' : 'bg-white text-gray-700 hover:bg-gray-50 hover:shadow-md'"
+                        class="px-8 py-4 rounded-xl border border-gray-200 transition-all duration-200 flex items-center space-x-3 min-w-[200px]">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+                            <path fill-rule="evenodd" d="M4 5a2 2 0 012-2v1a1 1 0 001 1h6a1 1 0 001-1V3a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="font-semibold">Format Resume</span>
+                    </button>
+                    <button 
+                        @click="currentMode = 'skills'"
+                        :class="currentMode === 'skills' ? 'bg-primary-800 text-white shadow-lg' : 'bg-white text-gray-700 hover:bg-gray-50 hover:shadow-md'"
+                        class="px-8 py-4 rounded-xl border border-gray-200 transition-all duration-200 flex items-center space-x-3 min-w-[200px]">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                        </svg>
+                        <span class="font-semibold">Extract Skills</span>
+                    </button>
+                    <button 
+                        @click="currentMode = 'interview'"
+                        :class="currentMode === 'interview' ? 'bg-primary-800 text-white shadow-lg' : 'bg-white text-gray-700 hover:bg-gray-50 hover:shadow-md'"
+                        class="px-8 py-4 rounded-xl border border-gray-200 transition-all duration-200 flex items-center space-x-3 min-w-[200px]">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="font-semibold">Interview Questions</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Format Resume Mode -->
+            <div x-show="currentMode === 'format'" class="space-y-8">
+                <div class="bg-white rounded-2xl card-shadow p-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
+                            <svg class="w-7 h-7 text-primary-800" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+                                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2v1a1 1 0 001 1h6a1 1 0 001-1V3a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">Format Resume for ATS</h2>
+                            <p class="text-gray-600">Upload your resume and get an ATS-optimized version with professional formatting</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center hover:border-primary-300 transition-colors">
+                            <svg class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <label class="block text-lg font-medium text-gray-700 mb-2">Upload Resume</label>
+                            <p class="text-sm text-gray-500 mb-4">Supports PDF, DOC, DOCX, and TXT files</p>
+                            <input 
+                                type="file" 
+                                @change="handleFileUpload($event, 'resume')"
+                                accept=".pdf,.doc,.docx,.txt"
+                                class="hidden">
+                            <button 
+                                @click="$event.target.previousElementSibling.click()"
+                                class="bg-primary-800 text-white px-6 py-3 rounded-lg hover:bg-primary-900 transition-colors font-medium">
+                                Choose File
+                            </button>
+                            <p x-show="resumeFile" class="mt-2 text-sm text-green-600 font-medium" x-text="resumeFile?.name"></p>
+                        </div>
+                        
+                        <button 
+                            @click="formatResume()"
+                            :disabled="!resumeFile || isLoading"
+                            class="w-full bg-primary-800 text-white px-8 py-4 rounded-xl hover:bg-primary-900 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-semibold text-lg">
+                            <span x-show="!isLoading" class="flex items-center justify-center space-x-2">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Format Resume</span>
+                            </span>
+                            <span x-show="isLoading" class="flex items-center justify-center space-x-2">
+                                <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span>Processing...</span>
+                            </span>
+                        </button>
+                    </div>
+
+                    <!-- Results -->
+                    <div x-show="formatResult" class="mt-8 space-y-6">
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-green-800">ATS Score: <span x-text="formatResult?.ats_score"></span>/100</h3>
+                                    <p class="text-green-700">Your resume is well-optimized for ATS systems</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl p-6">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">Formatted Resume:</h3>
+                            <div class="bg-white rounded-lg p-6 border max-h-96 overflow-y-auto">
+                                <pre class="text-sm text-gray-700 whitespace-pre-wrap font-mono" x-text="formatResult?.formatted_resume"></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-r from-blue-50 to-primary-50 border border-blue-200 rounded-xl p-6">
+                            <h3 class="text-lg font-bold text-primary-800 mb-4">Recommended Improvements:</h3>
+                            <ul class="space-y-2">
+                                <template x-for="improvement in formatResult?.improvements">
+                                    <li class="flex items-start space-x-3">
+                                        <svg class="w-5 h-5 text-primary-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span class="text-primary-700" x-text="improvement"></span>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Extract Skills Mode -->
+            <div x-show="currentMode === 'skills'" class="space-y-8">
+                <div class="bg-white rounded-2xl card-shadow p-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
+                            <svg class="w-7 h-7 text-primary-800" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">Extract Skills from Job Description</h2>
+                            <p class="text-gray-600">Analyze job postings to identify required and preferred skills</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-lg font-semibold text-gray-700 mb-3">Job Description</label>
+                            <textarea 
+                                x-model="jobDescription"
+                                rows="8"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
+                                placeholder="Paste the complete job description here..."></textarea>
+                        </div>
+                        
+                        <button 
+                            @click="extractSkills()"
+                            :disabled="!jobDescription.trim() || isLoading"
+                            class="w-full bg-primary-800 text-white px-8 py-4 rounded-xl hover:bg-primary-900 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-semibold text-lg">
+                            <span x-show="!isLoading" class="flex items-center justify-center space-x-2">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Extract Skills</span>
+                            </span>
+                            <span x-show="isLoading" class="flex items-center justify-center space-x-2">
+                                <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span>Analyzing...</span>
+                            </span>
+                        </button>
+                    </div>
+
+                    <!-- Results -->
+                    <div x-show="skillsResult" class="mt-8 space-y-6">
+                        <div class="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-6">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-purple-800">Experience Level</h3>
+                                    <p class="text-purple-700 font-medium" x-text="skillsResult?.experience_level"></p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-r from-red-50 to-rose-50 border border-red-200 rounded-xl p-6">
+                            <h3 class="text-lg font-bold text-red-800 mb-4">Core Skills (Must Have):</h3>
+                            <div class="flex flex-wrap gap-3">
+                                <template x-for="skill in skillsResult?.core_skills">
+                                    <span class="bg-red-100 text-red-800 px-4 py-2 rounded-full text-sm font-medium border border-red-200" x-text="skill"></span>
+                                </template>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-r from-blue-50 to-primary-50 border border-blue-200 rounded-xl p-6">
+                            <h3 class="text-lg font-bold text-primary-800 mb-4">Nice to Have Skills:</h3>
+                            <div class="flex flex-wrap gap-3">
+                                <template x-for="skill in skillsResult?.nice_to_have_skills">
+                                    <span class="bg-blue-100 text-primary-800 px-4 py-2 rounded-full text-sm font-medium border border-blue-200" x-text="skill"></span>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interview Questions Mode -->
+            <div x-show="currentMode === 'interview'" class="space-y-8">
+                <div class="bg-white rounded-2xl card-shadow p-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
+                            <svg class="w-7 h-7 text-primary-800" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">Generate Interview Questions</h2>
+                            <p class="text-gray-600">Prepare for your interview with tailored questions based on the job description</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-lg font-semibold text-gray-700 mb-3">Job Description</label>
+                            <textarea 
+                                x-model="jobDescription"
+                                rows="8"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
+                                placeholder="Paste the complete job description here..."></textarea>
+                        </div>
+                        
+                        <button 
+                            @click="generateQuestions()"
+                            :disabled="!jobDescription.trim() || isLoading"
+                            class="w-full bg-primary-800 text-white px-8 py-4 rounded-xl hover:bg-primary-900 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-semibold text-lg">
+                            <span x-show="!isLoading" class="flex items-center justify-center space-x-2">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Generate Questions</span>
+                            </span>
+                            <span x-show="isLoading" class="flex items-center justify-center space-x-2">
+                                <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span>Generating...</span>
+                            </span>
+                        </button>
+                    </div>
+
+                    <!-- Results -->
+                    <div x-show="interviewResult" class="mt-8 space-y-6">
+                        <div class="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-6">
+                            <h3 class="text-lg font-bold text-purple-800 mb-4 flex items-center space-x-2">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Behavioral Questions</span>
+                            </h3>
+                            <div class="space-y-3">
+                                <template x-for="(question, index) in interviewResult?.behavioral_questions">
+                                    <div class="bg-white rounded-lg p-4 border border-purple-100">
+                                        <div class="flex items-start space-x-3">
+                                            <span class="bg-purple-100 text-purple-800 text-sm font-bold px-2 py-1 rounded-full" x-text="index + 1"></span>
+                                            <p class="text-purple-700 font-medium" x-text="question"></p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-xl p-6">
+                            <h3 class="text-lg font-bold text-orange-800 mb-4 flex items-center space-x-2">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Technical Questions</span>
+                            </h3>
+                            <div class="space-y-3">
+                                <template x-for="(question, index) in interviewResult?.technical_questions">
+                                    <div class="bg-white rounded-lg p-4 border border-orange-100">
+                                        <div class="flex items-start space-x-3">
+                                            <span class="bg-orange-100 text-orange-800 text-sm font-bold px-2 py-1 rounded-full" x-text="index + 1"></span>
+                                            <p class="text-orange-700 font-medium" x-text="question"></p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-200 rounded-xl p-6">
+                            <h3 class="text-lg font-bold text-emerald-800 mb-4 flex items-center space-x-2">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Company-Specific Questions</span>
+                            </h3>
+                            <div class="space-y-3">
+                                <template x-for="(question, index) in interviewResult?.company_specific_questions">
+                                    <div class="bg-white rounded-lg p-4 border border-emerald-100">
+                                        <div class="flex items-start space-x-3">
+                                            <span class="bg-emerald-100 text-emerald-800 text-sm font-bold px-2 py-1 rounded-full" x-text="index + 1"></span>
+                                            <p class="text-emerald-700 font-medium" x-text="question"></p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function resumeBuilder() {
+            return {
+                currentMode: 'format',
+                jobDescription: '',
+                resumeFile: null,
+                isLoading: false,
+                formatResult: null,
+                skillsResult: null,
+                interviewResult: null,
+                
+                handleFileUpload(event, type) {
+                    if (type === 'resume') {
+                        this.resumeFile = event.target.files[0];
+                    }
+                },
+                
+                async formatResume() {
+                    if (!this.resumeFile) return;
+                    
+                    this.isLoading = true;
+                    this.formatResult = null;
+                    
+                    try {
+                        const formData = new FormData();
+                        formData.append('file', this.resumeFile);
+                        
+                        const response = await fetch('http://127.0.0.1:8001/format-resume', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        if (!response.ok) {
+                            throw new Error('Failed to format resume');
+                        }
+                        
+                        this.formatResult = await response.json();
+                    } catch (error) {
+                        alert('Error formatting resume: ' + error.message);
+                    } finally {
+                        this.isLoading = false;
+                    }
+                },
+                
+                async extractSkills() {
+                    if (!this.jobDescription.trim()) return;
+                    
+                    this.isLoading = true;
+                    this.skillsResult = null;
+                    
+                    try {
+                        const response = await fetch('http://127.0.0.1:8001/extract-skills', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                job_description: this.jobDescription
+                            })
+                        });
+                        
+                        if (!response.ok) {
+                            throw new Error('Failed to extract skills');
+                        }
+                        
+                        this.skillsResult = await response.json();
+                    } catch (error) {
+                        alert('Error extracting skills: ' + error.message);
+                    } finally {
+                        this.isLoading = false;
+                    }
+                },
+                
+                async generateQuestions() {
+                    if (!this.jobDescription.trim()) return;
+                    
+                    this.isLoading = true;
+                    this.interviewResult = null;
+                    
+                    try {
+                        const response = await fetch('http://127.0.0.1:8001/generate-interview-questions', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                job_description: this.jobDescription
+                            })
+                        });
+                        
+                        if (!response.ok) {
+                            throw new Error('Failed to generate questions');
+                        }
+                        
+                        this.interviewResult = await response.json();
+                    } catch (error) {
+                        alert('Error generating questions: ' + error.message);
+                    } finally {
+                        this.isLoading = false;
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
