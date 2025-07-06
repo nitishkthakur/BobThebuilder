@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-gray-800 text-white shadow-md">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a class="text-xl font-bold" href="index.html">AI Resume Builder</a>
+            <div class="flex space-x-4">
+                <a href="index.html" class="px-3 py-2 rounded-md text-sm font-medium text-white bg-gray-900">Resume Builder</a>
+                <a href="skills.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">Skill Suggester</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-6 py-12">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800">Create Your Professional Resume</h1>
+            <p class="text-xl text-gray-600 mt-2">Fill in your details and our AI will suggest a professional resume layout and content.</p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-2xl font-semibold mb-6">Your Information</h3>
+                <form id="resume-form" class="space-y-4">
+                    <div>
+                        <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Full Name</label>
+                        <input type="text" id="name" class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., John Doe" required>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                        <input type="email" id="email" class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., john.doe@example.com" required>
+                    </div>
+                    <div>
+                        <label for="phone" class="block text-gray-700 text-sm font-bold mb-2">Phone</label>
+                        <input type="tel" id="phone" class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., (123) 456-7890" required>
+                    </div>
+                    <div>
+                        <label for="education" class="block text-gray-700 text-sm font-bold mb-2">Education</label>
+                        <textarea id="education" rows="3" class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., B.S. in Computer Science, University of Example (2020-2024)" required></textarea>
+                    </div>
+                    <div>
+                        <label for="experience" class="block text-gray-700 text-sm font-bold mb-2">Work Experience</label>
+                        <textarea id="experience" rows="4" class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Describe your roles, responsibilities, and achievements." required></textarea>
+                    </div>
+                    <div>
+                        <label for="projects" class="block text-gray-700 text-sm font-bold mb-2">Projects</label>
+                        <textarea id="projects" rows="4" class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Detail your personal or academic projects, including technologies used." required></textarea>
+                    </div>
+                    <div>
+                        <button type="submit" class="w-full bg-blue-800 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300">Generate Resume</button>
+                    </div>
+                </form>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-2xl font-semibold mb-6">AI-Generated Suggestion</h3>
+                <div id="resume-output" class="min-h-[500px] p-3">
+                    <p class="text-gray-500">Your resume suggestion will appear here...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-800 text-white text-center py-4 mt-12">
+        <p>&copy; 2025 Resume Builder</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
