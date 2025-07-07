@@ -29,6 +29,18 @@ def test_format_resume_txt_success():
     ({}, "/generate-interview-questions", "Please provide a job description"),
 ])
 def test_missing_job_description(payload, endpoint, error_msg):
+    """
+    Tests the API endpoint for handling missing job description in the payload.
+
+    Args:
+        payload (dict): The data to be sent in the POST request, expected to be missing the job description.
+        endpoint (str): The API endpoint URL to which the request is sent.
+        error_msg (str): The expected error message to be present in the response.
+
+    Asserts:
+        - The response status code is 400 (Bad Request).
+        - The expected error message is present in the response text.
+    """
     resp = client.post(endpoint, data=payload)
     assert resp.status_code == 400
     assert error_msg in resp.text
